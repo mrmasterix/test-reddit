@@ -1,0 +1,13 @@
+.container {
+  clear: both;
+}
+.sidebar {
+  float: left;
+  width: 200px;
+}
+
+.content {
+  float: left;
+  padding: 20px;
+  width: calc(100% - 240px);
+}

@@ -1,0 +1,10 @@
+<ul>
+  <li *ngFor="let item of list" class="item">
+    <div
+      (click)="onClickHandler($event, item)"
+      class="link"
+    >
+      {{ item.display_name }}
+  </div>
+  </li>
+</ul>
