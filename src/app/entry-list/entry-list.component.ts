@@ -46,6 +46,7 @@ export class EntryListComponent implements OnInit, DoCheck {
     }
 
     if (this.entriesCache[this.subreddit]) {
+      this.lastEntry = last(this.entriesCache[this.subreddit]);
       return of(this.entriesCache[this.subreddit]);
     }
 
@@ -73,11 +74,11 @@ export class EntryListComponent implements OnInit, DoCheck {
       .pipe(
         map(data => {
           const childrenData = data.data.children;
-          const all = this.entriesCache[this.subreddit].concat((childrenData));
+          this.entriesCache[this.subreddit].push(...childrenData);
           this.lastEntry = last(this.entriesCache[this.subreddit]);
-          return all;
+          this.cd.markForCheck();
+          return this.entriesCache[this.subreddit];
         })
       );
-    this.cd.markForCheck();
   }
 }
