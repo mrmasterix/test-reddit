@@ -1,0 +1,7 @@
+<div *ngIf="entries">
+  <button (click)="onClearCache()">Clear Cache</button>
+  <button (click)="onLoadNext()">Fetch Next</button>
+  <ng-container *ngFor="let entry of (entries | async)">
+    <app-entry [entry]="entry"></app-entry>
+  </ng-container>
+</div>

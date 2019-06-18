@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { EntryTitleComponent } from './entry-title/entry-title.component';
+import { EntryListComponent } from './entry-list/entry-list.component';
 
 const routes: Routes = [
   {
     path: 'r/:subreddit',
-    component: EntryTitleComponent,
+    component: EntryListComponent,
   }
 ];
 

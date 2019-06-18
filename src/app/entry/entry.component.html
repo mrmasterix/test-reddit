@@ -1,0 +1,8 @@
+<app-entry-title [title]="entry.data.title"></app-entry-title>
+<img *ngIf="entry.data.thumbnail" [attr.src]="entry.data.thumbnail" alt="" />
+<div *ngIf="entry.data.selftext">
+  {{ entry.data.selftext }}
+</div>
+<hr>
+<div>Author: {{entry.data.author}}</div>
+<hr>

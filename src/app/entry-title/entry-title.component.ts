@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EntryTitleComponent implements OnInit, OnChanges {
-  public title = '';
+  @Input() public title = '';
 
   constructor(
     private router: Router,
@@ -16,24 +16,7 @@ export class EntryTitleComponent implements OnInit, OnChanges {
     private cdr: ChangeDetectorRef
   ) { }
 
-  get runChangeDetection() {
-    console.log('Checking the view');
-    return true;
-  }
-
-  public setTitle() {
-    console.log('setTitle');
-    this.title = this.route.snapshot.params.subreddit;
-    this.cdr.detectChanges();
-  }
-
   public ngOnInit() {
-    this.setTitle();
-    this.router.events.subscribe(() => {
-      if ( this.route.snapshot.params.subreddit !== this.title) {
-        this.setTitle();
-      }
-    });
   }
 
   public ngOnChanges(a) {

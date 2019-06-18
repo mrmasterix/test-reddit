@@ -47,7 +47,7 @@ export class ApiService {
     return data.map(child => child.data);
   }
 
-  public fetchSubreddit(subreddit: string, query: GetQuery = {}) {
+  public fetchSubreddit(subreddit: string, query: GetQuery = {}): Observable<any> {
     return this.http.get(`${this.apiUrl}/r/${subreddit}.json?${this.generateQuery(query)}`);
   }
 }
