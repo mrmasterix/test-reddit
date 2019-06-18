@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef, DoCheck } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -7,15 +7,23 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./entry-title.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EntryTitleComponent implements OnInit {
+export class EntryTitleComponent implements OnInit, DoCheck {
   @Input() public title = '';
+  public oldTitle = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cd: ChangeDetectorRef
   ) { }
 
   public ngOnInit() {
+  }
+
+  public ngDoCheck() {
+    if (this.title !== this.oldTitle) {
+      this.oldTitle = this.title;
+      this.cd.markForCheck();
+    }
   }
 }

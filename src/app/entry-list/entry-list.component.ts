@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, OnChanges, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService } from '../services/api-service';
-import { Observable, of, Subject, fromEvent, interval, merge, combineLatest } from 'rxjs';
-import { map, switchMap, withLatestFrom, shareReplay, tap, switchMapTo, isEmpty, share } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
-import { last, first, omit, pick, isEqual } from 'lodash';
+import { Observable, Subject, merge } from 'rxjs';
+import { map, switchMap, tap, share, filter } from 'rxjs/operators';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { isEqual } from 'lodash';
 
 @Component({
   selector: 'app-entry-list',
@@ -29,6 +29,7 @@ export class EntryListComponent implements OnInit, DoCheck {
     public apiService: ApiService,
     public route: ActivatedRoute,
     private cd: ChangeDetectorRef,
+    private router: Router,
   ) { }
 
   public ngOnInit() {
@@ -45,24 +46,42 @@ export class EntryListComponent implements OnInit, DoCheck {
     }
   }
 
-  public initDataFetchObs() {
-    const $fetchNextEntries = this.fetchNext.pipe(
+  public fetchNextEntries() {
+    return this.fetchNext.pipe(
       tap(() => this.page += 1),
-      switchMap(() => this.fetchEntries({}, 'next'))
+      switchMap(() => this.fetchEntries({ after: this.pageNavigation[this.page - 1].after }))
     );
-    const $fetchPrevEntries = this.fetchPrev.pipe(
+  }
+
+  public fetchPrevEntries() {
+    return this.fetchPrev.pipe(
       tap(() => this.page -= 1),
-      switchMap(() => this.fetchEntries({}, 'prev'))
+      switchMap(() => this.fetchEntries({ before: this.pageNavigation[this.page + 1].before }))
     );
-    const $fetchNum = this.changeNum.pipe(
+  }
+
+  public onCountChange() {
+    return this.changeNum.pipe(
       tap((num: string) => this.itemsNumToFetch = num),
       switchMap(() => this.fetchEntries())
     );
+  }
+
+  public onRouteChage() {
+    return this.router.events.pipe(
+      filter(val => val instanceof NavigationEnd),
+      tap(() => this.subreddit = this.route.snapshot.params.subreddit),
+      switchMap(() => this.fetchEntries({ after: null, before: null }))
+    );
+  }
+
+  public initDataFetchObs() {
     this.$entries = merge(
-      this.fetchEntries({ limit: '9' }),
-      $fetchNum,
-      $fetchNextEntries,
-      $fetchPrevEntries,
+      this.fetchEntries(),
+      this.fetchNextEntries(),
+      this.fetchPrevEntries(),
+      this.onCountChange(),
+      this.onRouteChage(),
     ).pipe(share());
 
     this.$entries.subscribe(entries => {
@@ -70,7 +89,7 @@ export class EntryListComponent implements OnInit, DoCheck {
     });
   }
 
-  public fetchEntries(userQuery = {}, dest?) {
+  public fetchEntries(userQuery = {}) {
     const reqQuery = {
       limit: this.itemsNumToFetch,
       count: this.itemsNumToFetch,
@@ -78,15 +97,6 @@ export class EntryListComponent implements OnInit, DoCheck {
       after: (this.pageNavigation[this.page - 1] || {}).after,
       ...userQuery,
     };
-
-    if (dest && dest === 'next') {
-      reqQuery.after = this.pageNavigation[this.page - 1].after;
-    }
-
-    if (dest && dest === 'prev') {
-      reqQuery.before = this.pageNavigation[this.page + 1].before;
-      delete reqQuery.after;
-    }
 
     return this.apiService.fetchSubreddit(this.subreddit, reqQuery)
       .pipe(
