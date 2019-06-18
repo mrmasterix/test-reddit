@@ -11,7 +11,7 @@ import { last } from 'lodash';
   styleUrls: ['./entry-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EntryListComponent implements OnInit, OnChanges, DoCheck {
+export class EntryListComponent implements OnInit, DoCheck {
   @Input() public subreddit: string;
   public entries: Observable<any[]>;
 
@@ -38,10 +38,6 @@ export class EntryListComponent implements OnInit, OnChanges, DoCheck {
     this.cd.markForCheck();
     this.subreddit = newSubreddit;
     this.entries = this.fetchSubredditData();
-  }
-
-  ngOnChanges(data) {
-    console.log(data);
   }
 
   public fetchSubredditData(query = {}): Observable<any[]> {

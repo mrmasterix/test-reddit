@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./entry-title.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EntryTitleComponent implements OnInit, OnChanges {
+export class EntryTitleComponent implements OnInit {
   @Input() public title = '';
 
   constructor(
@@ -17,9 +17,5 @@ export class EntryTitleComponent implements OnInit, OnChanges {
   ) { }
 
   public ngOnInit() {
-  }
-
-  public ngOnChanges(a) {
-    console.log(a);
   }
 }
