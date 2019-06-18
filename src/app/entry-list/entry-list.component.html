@@ -6,7 +6,7 @@
 <button (click)="changeNum.next('15')">15</button>
 <button (click)="changeNum.next('20')">20</button>
 <div *ngIf="$entries">
-  <ng-container *ngFor="let entry of ($entries | async)">
+  <ng-container *ngFor="let entry of entries">
     <app-entry [entry]="entry"></app-entry>
   </ng-container>
 </div>

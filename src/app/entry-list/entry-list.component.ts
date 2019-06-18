@@ -3,7 +3,7 @@ import { ApiService } from '../services/api-service';
 import { Observable, of, Subject, fromEvent, interval, merge, combineLatest } from 'rxjs';
 import { map, switchMap, withLatestFrom, shareReplay, tap, switchMapTo, isEmpty, share } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { last, first, omit, pick } from 'lodash';
+import { last, first, omit, pick, isEqual } from 'lodash';
 
 @Component({
   selector: 'app-entry-list',
@@ -14,7 +14,8 @@ import { last, first, omit, pick } from 'lodash';
 export class EntryListComponent implements OnInit, DoCheck {
   public subreddit: string;
   public $entries: Observable<any>;
-  public entries: any[];
+  public entries: any[] = [];
+  public newEntries: any[] = [];
   public fetchNext = new Subject();
   public fetchPrev = new Subject();
   public changeNum = new Subject();
@@ -36,7 +37,12 @@ export class EntryListComponent implements OnInit, DoCheck {
   }
 
   public ngDoCheck() {
-    // this.cd.markForCheck();
+    const curEntriesNames = this.entries.map(entr => entr.data.name);
+    const newEntriesNames = this.newEntries.map(entr => entr.data.name);
+    if (!isEqual(curEntriesNames, newEntriesNames)) {
+      this.entries = this.newEntries;
+      this.cd.markForCheck();
+    }
   }
 
   public initDataFetchObs() {
@@ -58,6 +64,10 @@ export class EntryListComponent implements OnInit, DoCheck {
       $fetchNextEntries,
       $fetchPrevEntries,
     ).pipe(share());
+
+    this.$entries.subscribe(entries => {
+      this.newEntries = entries;
+    });
   }
 
   public fetchEntries(userQuery = {}, dest?) {
