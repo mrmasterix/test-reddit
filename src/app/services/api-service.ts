@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 
 interface GetQuery {
   limit?: string;
+  count?: string;
   before?: string;
   after?: string;
 }
@@ -29,6 +30,7 @@ export class ApiService {
 
     const result =  new URLSearchParams();
     result.set('limit', limit);
+    result.set('count', limit);
 
     if (after) { result.set('after', after); }
     if (before) { result.set('before', before); }

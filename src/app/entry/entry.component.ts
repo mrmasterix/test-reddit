@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, DoCheck, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, DoCheck, ChangeDetectorRef, OnChanges, AfterContentChecked } from '@angular/core';
 
 @Component({
   selector: 'app-entry',
@@ -6,7 +6,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Input, DoCheck, ChangeDetec
   styleUrls: ['./entry.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EntryComponent implements OnInit, DoCheck {
+export class EntryComponent implements OnInit, DoCheck, OnChanges, AfterContentChecked {
   @Input() public entry: any;
   public entryNow;
 
@@ -16,6 +16,7 @@ export class EntryComponent implements OnInit, DoCheck {
 
   ngOnInit() {
     this.entryNow = this.entry;
+    // this.cd.detach();
   }
 
   ngDoCheck() {
@@ -23,7 +24,15 @@ export class EntryComponent implements OnInit, DoCheck {
       return;
     }
 
-    this.cd.markForCheck();
+    // this.cd.reattach();
+  }
+
+  public ngOnChanges() {
+    console.log('ngOnChanges: app-entry');
+  }
+
+  ngAfterContentChecked() {
+    console.log('ngAfterContentChecked: app-entry');
   }
 
 }

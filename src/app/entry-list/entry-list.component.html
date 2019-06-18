@@ -1,7 +1,12 @@
-<div *ngIf="entries">
-  <button (click)="onClearCache()">Clear Cache</button>
-  <button (click)="onLoadNext()">Fetch Next</button>
-  <ng-container *ngFor="let entry of (entries | async)">
+<button (click)="fetchPrev.next(firstEntryName)" [disabled]="isPrevDisabled()">Fetch Prev</button>
+<!-- <button (click)="onClearCache()">Clear Cache</button> -->
+<button (click)="fetchNext.next(lastEntryName)">Fetch Next</button>
+<button (click)="changeNum.next('5')">5</button>
+<button (click)="changeNum.next('10')">10</button>
+<button (click)="changeNum.next('15')">15</button>
+<button (click)="changeNum.next('20')">20</button>
+<div *ngIf="$entries">
+  <ng-container *ngFor="let entry of ($entries | async)">
     <app-entry [entry]="entry"></app-entry>
   </ng-container>
 </div>

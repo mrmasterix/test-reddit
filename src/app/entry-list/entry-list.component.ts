@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, OnChanges, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService } from '../services/api-service';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, Subject, fromEvent, interval, merge, combineLatest } from 'rxjs';
+import { map, switchMap, withLatestFrom, shareReplay, tap, switchMapTo, isEmpty, share } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { last } from 'lodash';
+import { last, first, omit, pick } from 'lodash';
 
 @Component({
   selector: 'app-entry-list',
@@ -12,11 +12,17 @@ import { last } from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EntryListComponent implements OnInit, DoCheck {
-  @Input() public subreddit: string;
-  public entries: Observable<any[]>;
-
-  public entriesCache: any = {};
-  public lastEntry: any;
+  public subreddit: string;
+  public $entries: Observable<any>;
+  public entries: any[];
+  public fetchNext = new Subject();
+  public fetchPrev = new Subject();
+  public changeNum = new Subject();
+  public lastEntryName: string;
+  public firstEntryName: string;
+  public itemsNumToFetch = '10';
+  public page = 1;
+  public pageNavigation = {};
 
   constructor(
     public apiService: ApiService,
@@ -24,61 +30,69 @@ export class EntryListComponent implements OnInit, DoCheck {
     private cd: ChangeDetectorRef,
   ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.subreddit = this.route.snapshot.params.subreddit;
-    this.entries = this.fetchSubredditData();
+    this.initDataFetchObs();
   }
 
-  ngDoCheck() {
-    const newSubreddit = this.route.snapshot.params.subreddit;
-    if (newSubreddit === this.subreddit) {
-      return;
-    }
-
-    this.cd.markForCheck();
-    this.subreddit = newSubreddit;
-    this.entries = this.fetchSubredditData();
+  public ngDoCheck() {
+    // this.cd.markForCheck();
   }
 
-  public fetchSubredditData(query = {}): Observable<any[]> {
-    if (!this.subreddit) {
-      return of([]);
-    }
-
-    if (this.entriesCache[this.subreddit]) {
-      this.lastEntry = last(this.entriesCache[this.subreddit]);
-      return of(this.entriesCache[this.subreddit]);
-    }
-
-    return this.apiService.fetchSubreddit(this.subreddit, query)
-      .pipe(
-        map(data => {
-          const childrenData = data.data.children;
-          this.entriesCache[this.subreddit] = childrenData;
-          this.lastEntry = last(this.entriesCache[this.subreddit]);
-          return childrenData;
-        })
-      );
+  public initDataFetchObs() {
+    const $fetchNextEntries = this.fetchNext.pipe(
+      tap(() => this.page += 1),
+      switchMap(() => this.fetchEntries({}, 'next'))
+    );
+    const $fetchPrevEntries = this.fetchPrev.pipe(
+      tap(() => this.page -= 1),
+      switchMap(() => this.fetchEntries({}, 'prev'))
+    );
+    const $fetchNum = this.changeNum.pipe(
+      tap((num: string) => this.itemsNumToFetch = num),
+      switchMap(() => this.fetchEntries())
+    );
+    this.$entries = merge(
+      this.fetchEntries({ limit: '9' }),
+      $fetchNum,
+      $fetchNextEntries,
+      $fetchPrevEntries,
+    ).pipe(share());
   }
 
-  public onClearCache(): void {
-    this.entriesCache = {};
-  }
-
-  public onLoadNext() {
-    const idName = this.lastEntry.data.name;
-    const query = {
-      after: idName,
+  public fetchEntries(userQuery = {}, dest?) {
+    const reqQuery = {
+      limit: this.itemsNumToFetch,
+      count: this.itemsNumToFetch,
+      before: null,
+      after: (this.pageNavigation[this.page - 1] || {}).after,
+      ...userQuery,
     };
-    this.entries = this.apiService.fetchSubreddit(this.subreddit, query)
+
+    if (dest && dest === 'next') {
+      reqQuery.after = this.pageNavigation[this.page - 1].after;
+    }
+
+    if (dest && dest === 'prev') {
+      reqQuery.before = this.pageNavigation[this.page + 1].before;
+      delete reqQuery.after;
+    }
+
+    return this.apiService.fetchSubreddit(this.subreddit, reqQuery)
       .pipe(
-        map(data => {
-          const childrenData = data.data.children;
-          this.entriesCache[this.subreddit].push(...childrenData);
-          this.lastEntry = last(this.entriesCache[this.subreddit]);
-          this.cd.markForCheck();
-          return this.entriesCache[this.subreddit];
-        })
+        map((response): any[] => response.data),
+        tap((data: any) => {
+          this.pageNavigation[this.page] = {
+            after: data.after,
+            before: data.before,
+          };
+          this.lastEntryName = data.after;
+        }),
+        map((data): any[] => data.children),
       );
+  }
+
+  public isPrevDisabled() {
+    return this.page === 1;
   }
 }
