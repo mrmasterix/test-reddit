@@ -9,7 +9,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class EntryTitleComponent implements OnInit, DoCheck {
   @Input() public title = '';
+  @Input() public permalink = '';
   public oldTitle = '';
+  public oldPermalink = '';
 
   constructor(
     private router: Router,
@@ -23,7 +25,12 @@ export class EntryTitleComponent implements OnInit, DoCheck {
   public ngDoCheck() {
     if (this.title !== this.oldTitle) {
       this.oldTitle = this.title;
+      this.oldPermalink = this.permalink;
       this.cd.markForCheck();
     }
+  }
+
+  public onTitleClick() {
+    this.router.navigate([this.permalink]);
   }
 }

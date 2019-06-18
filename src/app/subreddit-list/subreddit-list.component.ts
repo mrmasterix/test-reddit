@@ -20,7 +20,7 @@ export class SubredditListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   public ngOnChanges() {
-    console.log('ngOnChanges: app-subreddit-list');
+    // console.log('ngOnChanges: app-subreddit-list');
   }
 
   public onClickHandler($event: Event, item) {

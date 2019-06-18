@@ -1,7 +1,7 @@
 import { Component, OnInit, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ApiService } from '../services/api-service';
 import { Observable, Subject, merge } from 'rxjs';
-import { map, switchMap, tap, share, filter } from 'rxjs/operators';
+import { map, switchMap, tap, share, filter, distinctUntilChanged } from 'rxjs/operators';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { isEqual } from 'lodash';
 
@@ -63,6 +63,7 @@ export class EntryListComponent implements OnInit, DoCheck {
   public onCountChange() {
     return this.changeNum.pipe(
       tap((num: string) => this.itemsNumToFetch = num),
+      distinctUntilChanged(),
       switchMap(() => this.fetchEntries())
     );
   }
@@ -70,7 +71,11 @@ export class EntryListComponent implements OnInit, DoCheck {
   public onRouteChage() {
     return this.router.events.pipe(
       filter(val => val instanceof NavigationEnd),
-      tap(() => this.subreddit = this.route.snapshot.params.subreddit),
+      tap(() => {
+        this.subreddit = this.route.snapshot.params.subreddit;
+        this.page = 1;
+        this.pageNavigation = {};
+      }),
       switchMap(() => this.fetchEntries({ after: null, before: null }))
     );
   }

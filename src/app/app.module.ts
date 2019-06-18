@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { SubredditListComponent } from './subreddit-list/subreddit-list.component';
 import { EntryListComponent } from './entry-list/entry-list.component';
 import { EntryComponent } from './entry/entry.component';
+import { FullEntryComponent } from './full-entry/full-entry.component';
+import { CommentsComponent } from './comments/comments.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { EntryComponent } from './entry/entry.component';
     SubredditListComponent,
     EntryListComponent,
     EntryComponent,
+    FullEntryComponent,
+    CommentsComponent,
   ],
   imports: [
     BrowserModule,

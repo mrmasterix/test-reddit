@@ -1,4 +1,4 @@
-<app-entry-title [title]="entry.data.title"></app-entry-title>
+<app-entry-title [title]="entry.data.title" [permalink]="entry.data.permalink"></app-entry-title>
 <img *ngIf="entry.data.thumbnail" [attr.src]="entry.data.thumbnail" alt="" />
 <div *ngIf="entry.data.selftext">
   {{ entry.data.selftext }}

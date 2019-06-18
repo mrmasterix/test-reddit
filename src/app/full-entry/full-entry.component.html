@@ -1,0 +1,12 @@
+<ng-container *ngIf="entry">
+  <h2>{{ entry.title }}</h2>
+  <p *ngIf="entry.selftext">{{ entry.selftext }}</p>
+  <img *ngIf="entry.thumbnail" [src]="entry.thumbnail" alt="">
+  <div>Author: {{ entry.author }}</div>
+  <div>Comments: {{ entry.num_comments }}</div>
+  <div>Score: {{ entry.score }}</div>
+  <div>Created: {{ entry.created | date }}</div>
+  <h3>Comments:</h3>
+  <app-comments [comments]="comments"></app-comments>
+  <!-- <div (click)="onShowComments($event)">Show more comments</div> -->
+</ng-container>

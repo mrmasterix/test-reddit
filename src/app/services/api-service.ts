@@ -52,4 +52,9 @@ export class ApiService {
   public fetchSubreddit(subreddit: string, query: GetQuery = {}): Observable<any> {
     return this.http.get(`${this.apiUrl}/r/${subreddit}.json?${this.generateQuery(query)}`);
   }
+
+  public fetchEntry({subreddit, entry_id: entryId, entry_title: entryTitle }, query: GetQuery = {}): Observable<any> {
+    // ${this.generateQuery(query)}
+    return this.http.get(`${this.apiUrl}/r/${subreddit}/comments/${entryId}/${entryTitle}.json?`);
+  }
 }
