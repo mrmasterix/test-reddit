@@ -11,3 +11,19 @@
   padding: 20px;
   width: calc(100% - 240px);
 }
+
+h1 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.filtering {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  margin: 0 0 10px;
+
+  input {
+    padding: 5px 10px;
+    margin-right: 10px;
+  }
+}

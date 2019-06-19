@@ -7,21 +7,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./subreddit-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubredditListComponent implements OnInit, DoCheck, OnChanges {
+export class SubredditListComponent {
   @Input() list: any[] = [];
 
   constructor(private router: Router) { }
-
-  ngOnInit() {
-  }
-
-  public ngDoCheck() {
-    // console.log('ngDoCheck: app-subreddit-list');
-  }
-
-  public ngOnChanges() {
-    // console.log('ngOnChanges: app-subreddit-list');
-  }
 
   public onClickHandler($event: Event, item) {
     $event.preventDefault();

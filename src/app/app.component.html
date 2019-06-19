@@ -2,6 +2,9 @@
   <h1>{{ title }}</h1>
   <div class="container">
     <div class="sidebar">
+        <div class="filtering">
+            <input type="text" placeholder="Filter" (keyup)="filtering.next($event)">
+        </div>
         <app-subreddit-list [list]="redditsObs | async"></app-subreddit-list>
     </div>
     <div class="content">
