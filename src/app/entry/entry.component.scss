@@ -1,0 +1,18 @@
+article {
+  width: 280px;
+  padding: 10px;
+  box-shadow: 1px 1px 10px #ccc;
+  overflow: hidden;
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+div {
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p {
+  max-height: 145px;
+  overflow: hidden;
+}

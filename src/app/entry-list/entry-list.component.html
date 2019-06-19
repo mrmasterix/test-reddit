@@ -5,7 +5,11 @@
 <button (click)="changeNum.next('10')">10</button>
 <button (click)="changeNum.next('15')">15</button>
 <button (click)="changeNum.next('20')">20</button>
-<div *ngIf="$entries">
+<span>
+  Show items: <input type="text" max="100" min="21" (change)="onNumItemsChange($event)" placeholder="Enter number of items">
+  <button (click)="changeNum.next(itemsNumToFetch)">Show me the truth</button>
+</span>
+<div *ngIf="$entries" class="entries">
   <ng-container *ngFor="let entry of entries">
     <app-entry [entry]="entry"></app-entry>
   </ng-container>

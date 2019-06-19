@@ -1,8 +1,9 @@
-<app-entry-title [title]="entry.data.title" [permalink]="entry.data.permalink"></app-entry-title>
-<img *ngIf="entry.data.thumbnail" [attr.src]="entry.data.thumbnail" alt="" />
-<div *ngIf="entry.data.selftext">
-  {{ entry.data.selftext }}
-</div>
-<hr>
-<div>Author: {{entry.data.author}}</div>
-<hr>
+<article>
+  <app-entry-title [title]="entry.data.title" [permalink]="entry.data.permalink"></app-entry-title>
+  <p *ngIf="entry.data.selftext">{{ entry.data.selftext }}</p>
+  <img *ngIf="entry.data.thumbnail" [src]="entry.data.thumbnail" alt="">
+  <div>Author: {{ entry.data.author }}</div>
+  <div>Comments: {{ entry.data.num_comments }}</div>
+  <div>Score: {{ entry.data.score }}</div>
+  <div>Created: {{ entry.data.created | date }}</div>
+</article>

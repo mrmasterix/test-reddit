@@ -120,4 +120,9 @@ export class EntryListComponent implements OnInit, DoCheck {
   public isPrevDisabled() {
     return this.page === 1;
   }
+
+  public onNumItemsChange(event): void {
+    const val = event.target.value;
+    this.itemsNumToFetch = val;
+  }
 }

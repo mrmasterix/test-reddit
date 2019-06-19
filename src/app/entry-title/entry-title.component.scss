@@ -1,5 +1,11 @@
 .title-link {
   cursor: pointer;
+  font-size: 14px;
+  padding: 0 0 20px 0;
+  line-height: 1.5;
+  margin: 0;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
   &:hover {
     text-decoration: underline;
   }
