@@ -13,7 +13,6 @@ export class SubredditListComponent {
   constructor(private router: Router) { }
 
   public onClickHandler($event: Event, item) {
-    $event.preventDefault();
     this.router.navigate([item.url], { state: item });
   }
 
