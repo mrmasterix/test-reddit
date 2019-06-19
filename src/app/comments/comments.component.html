@@ -1,6 +1,6 @@
 <ng-container *ngFor="let comment of comments">
   <div class="comment" *ngIf="comment.data.author">
-    <div *ngIf="comment.data.author">Author: {{ comment.data.author || 'unknown' }}</div>
+    <div *ngIf="comment.data.author" class="author">Author: {{ comment.data.author || 'unknown' }}</div>
     <div>{{ comment.data.body }}</div>
     <div *ngIf="comment.data.replies?.data?.children.length" class="sub-comment">
       <app-comments [comments]="comment.data.replies.data?.children"></app-comments>
